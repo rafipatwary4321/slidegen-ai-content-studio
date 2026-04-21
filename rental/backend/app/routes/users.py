@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -12,6 +12,7 @@ from app.schemas.lifestyle_profile import LifestyleProfileRead, LifestyleProfile
 from app.schemas.user import UserCreate, UserRead, UserUpdate
 
 router = APIRouter(prefix="/api/v1/users", tags=["users"])
+user_router = APIRouter(prefix="/user", tags=["users"])
 
 
 @router.post("", response_model=UserRead, status_code=status.HTTP_201_CREATED)
@@ -41,6 +42,35 @@ def create_user(payload: UserCreate, db: Session = Depends(get_db)) -> User:
 def upsert_lifestyle_profile(
     user_id: int,
     payload: LifestyleProfileUpsert,
+    db: Session = Depends(get_db),
+) -> LifestyleProfile:
+    if db.get(User, user_id) is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    row = db.get(LifestyleProfile, user_id)
+    if row is None:
+        row = LifestyleProfile(
+            user_id=user_id,
+            is_smoker=payload.is_smoker,
+            job_type=payload.job_type,
+            sleep_cycle=payload.sleep_cycle,
+            cleanliness_score=payload.cleanliness_score,
+        )
+        db.add(row)
+    else:
+        row.is_smoker = payload.is_smoker
+        row.job_type = payload.job_type
+        row.sleep_cycle = payload.sleep_cycle
+        row.cleanliness_score = payload.cleanliness_score
+    db.commit()
+    db.refresh(row)
+    return row
+
+
+@user_router.put("/lifestyle-profile", response_model=LifestyleProfileRead)
+def upsert_lifestyle_profile_for_logged_user(
+    payload: LifestyleProfileUpsert,
+    user_id: int = Query(..., description="Logged-in user id"),
     db: Session = Depends(get_db),
 ) -> LifestyleProfile:
     if db.get(User, user_id) is None:

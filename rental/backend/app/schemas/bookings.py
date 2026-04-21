@@ -61,3 +61,21 @@ class BookingSummaryResponse(BaseModel):
 class BookingConfirmResponse(BaseModel):
     summary: BookingSummaryResponse
     n8n_agreement_triggered: bool = True
+
+
+class TourismBookingCreate(BaseModel):
+    user_id: int
+    listing_id: int
+    check_in: date
+    check_out: date
+    include_guide: bool = False
+    selected_gear: list[str] = Field(default_factory=list)
+
+
+class TourismBookingResponse(BaseModel):
+    booking: BookingRead
+    nights: int
+    base_price: Decimal
+    guide_price: Decimal
+    gear_price: Decimal
+    total_price: Decimal

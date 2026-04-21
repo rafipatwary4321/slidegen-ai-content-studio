@@ -25,7 +25,7 @@ class BookingSummary {
 
   factory BookingSummary.fromJson(Map<String, dynamic> json) {
     return BookingSummary(
-      bookingId: json['booking_id'] as int,
+      bookingId: (json['booking_id'] as num).toInt(),
       status: json['status'] as String,
       digitalKey: json['digital_key'] as String?,
       listingTitle: json['listing_title'] as String,

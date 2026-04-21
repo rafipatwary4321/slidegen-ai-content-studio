@@ -8,7 +8,9 @@ from app.models.enums import (
     SleepCycle,
     UserRole,
 )
+from app.models.nid_verification import NIDVerification
 from app.models.listing import Listing
+from app.models.listing_lifestyle_profile import ListingLifestyleProfile
 from app.models.lifestyle_profile import LifestyleProfile
 from app.models.tourism_detail import TourismDetail
 from app.models.user import User
@@ -17,8 +19,10 @@ __all__ = [
     "Booking",
     "BookingStatus",
     "Listing",
+    "ListingLifestyleProfile",
     "ListingCategory",
     "LifestyleProfile",
+    "NIDVerification",
     "NidStatus",
     "SleepCycle",
     "TourismDetail",

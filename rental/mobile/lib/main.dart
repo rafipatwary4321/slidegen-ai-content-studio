@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'screens/home_map_screen.dart';
+import 'screens/main_shell.dart';
 
 void main() {
   runApp(const UrbanReliefApp());
@@ -11,13 +11,22 @@ class UrbanReliefApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const seed = Color(0xFF0D9488);
     return MaterialApp(
       title: 'UrbanRelief',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
         useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: seed,
+          brightness: Brightness.dark,
+        ),
+        fontFamily: 'Roboto',
+        navigationBarTheme: NavigationBarThemeData(
+          indicatorColor: seed.withOpacity(0.35),
+        ),
       ),
-      home: const HomeMapScreen(),
+      home: const MainShell(),
     );
   }
 }

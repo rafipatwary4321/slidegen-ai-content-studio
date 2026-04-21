@@ -13,6 +13,7 @@ from app.models.listing import Listing
 from app.models.lifestyle_profile import LifestyleProfile
 from app.models.tourism_detail import TourismDetail
 from app.models.user import User
+from app.services.matchmaking import calculate_match_percentage
 
 
 def haversine_distance_km(lat_col, lon_col, ref_lat: float, ref_lon: float):
@@ -123,27 +124,8 @@ def calculate_match_score(
     user_profile: LifestyleProfile,
     mess_profile: LifestyleProfile,
 ) -> float:
-    """
-    Compatibility percentage (0–100) between the seeker's LifestyleProfile and one mess member's profile.
-    Weights: smoking match, sleep cycle proximity, cleanliness proximity, job_type similarity.
-    """
-    score = 0.0
-    score += 25.0 if user_profile.is_smoker == mess_profile.is_smoker else 0.0
-    score += _sleep_cycle_points(user_profile.sleep_cycle, mess_profile.sleep_cycle)
-
-    diff = abs(user_profile.cleanliness_score - mess_profile.cleanliness_score)
-    score += 25.0 * (1.0 - min(diff / 9.0, 1.0))
-
-    vj = (user_profile.job_type or "").strip().lower()
-    mj = (mess_profile.job_type or "").strip().lower()
-    if vj and mj:
-        score += 25.0 if vj == mj else 0.0
-    elif not vj and not mj:
-        score += 25.0
-    else:
-        score += 10.0
-
-    return round(score, 2)
+    """Compatibility percentage using service-level matchmaking rules."""
+    return calculate_match_percentage(user_profile, mess_profile)
 
 
 def lifestyle_pair_score(viewer: LifestyleProfile, member: LifestyleProfile) -> float:

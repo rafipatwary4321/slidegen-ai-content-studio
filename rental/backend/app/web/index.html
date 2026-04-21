@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UrbanRelief — Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-deep: #f4f9ff;
+      --bg-mid: #e8f2ff;
+      --surface: #ffffff;
+      --surface-hover: #f4f8ff;
+      --border: #cfe1ff;
+      --text: #0f2a4d;
+      --muted: #4f6f99;
+      --teal: #1d4ed8;
+      --teal-dim: rgba(29, 78, 216, 0.14);
+      --blue: #2563eb;
+      --violet: #3b82f6;
+      --amber: #2563eb;
+      --rose: #1e40af;
+      --radius: 14px;
+      --shadow: 0 14px 36px rgba(37, 99, 235, 0.12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+      background: var(--bg-deep);
+      color: var(--text);
+      line-height: 1.55;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .bg-mesh {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 100% 80% at 0% -20%, rgba(37, 99, 235, 0.16), transparent 55%),
+        radial-gradient(ellipse 70% 50% at 100% 0%, rgba(59, 130, 246, 0.12), transparent 50%),
+        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(147, 197, 253, 0.2), transparent 55%),
+        linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-mid) 55%, var(--bg-deep) 100%);
+    }
+
+    .layout {
+      position: relative;
+      z-index: 1;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem 3rem;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--teal), #2563eb);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: #ffffff;
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.24);
+    }
+
+    .brand h1 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .brand span {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--muted);
+      margin-top: 0.1rem;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 0.45rem 0.85rem;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      transition: color 0.15s, background 0.15s, border-color 0.15s;
+    }
+
+    nav a:hover {
+      color: var(--text);
+      background: var(--surface);
+      border-color: var(--border);
+    }
+
+    nav a.primary {
+      background: var(--teal-dim);
+      color: var(--teal);
+      border-color: rgba(37, 99, 235, 0.35);
+    }
+
+    nav a.primary:hover {
+      background: rgba(37, 99, 235, 0.18);
+      color: #1d4ed8;
+    }
+
+    .hero {
+      margin-bottom: 2.75rem;
+    }
+
+    .hero h2 {
+      font-size: clamp(1.75rem, 4vw, 2.35rem);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
+      max-width: 18ch;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      color: var(--muted);
+      max-width: 52ch;
+      font-size: 1.02rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .pillars {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .pillar {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.4rem 0.75rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .pillar.short { border-color: rgba(251, 191, 36, 0.35); color: var(--amber); }
+    .pillar.bach { border-color: rgba(56, 189, 248, 0.35); color: var(--blue); }
+    .pillar.fam { border-color: rgba(167, 139, 250, 0.35); color: var(--violet); }
+    .pillar.tour { border-color: rgba(45, 212, 191, 0.35); color: var(--teal); }
+
+    section.panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.35rem 1.5rem;
+      margin-bottom: 1.25rem;
+      box-shadow: var(--shadow);
+    }
+
+    section.panel h3 {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 1.1rem;
+      font-weight: 700;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+      font-family: inherit;
+      font-size: 0.9rem;
+      padding: 0.55rem 0.75rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--text);
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: rgba(37, 99, 235, 0.5);
+      box-shadow: 0 0 0 3px var(--teal-dim);
+    }
+
+    .row-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      user-select: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .toggle input { accent-color: var(--teal); width: 1.05rem; height: 1.05rem; }
+
+    button.search-btn {
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 0.65rem 1.35rem;
+      border: none;
+      border-radius: 11px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #ffffff;
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.25);
+      transition: transform 0.12s, filter 0.12s;
+    }
+
+    button.search-btn:hover { filter: brightness(1.06); transform: translateY(-1px); }
+    button.search-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+    .alert {
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .alert.show { display: block; }
+    .alert.err { background: rgba(239, 246, 255, 0.95); border: 1px solid rgba(59, 130, 246, 0.35); color: #1e3a8a; }
+    .alert.ok { background: rgba(219, 234, 254, 0.95); border: 1px solid rgba(37, 99, 235, 0.35); color: #1d4ed8; }
+
+    .results {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    @media (min-width: 640px) {
+      .results { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (min-width: 960px) {
+      .results { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .card-listing {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.1rem;
+      background: #ffffff;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .card-listing:hover {
+      border-color: rgba(37, 99, 235, 0.3);
+      background: var(--surface-hover);
+    }
+
+    .card-listing .title {
+      font-weight: 700;
+      font-size: 0.98rem;
+      margin-bottom: 0.35rem;
+      letter-spacing: -0.02em;
+    }
+
+    .card-listing .meta {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 0.65rem;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+
+    .badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .badge.match { color: var(--blue); border-color: rgba(56, 189, 248, 0.35); }
+    .badge.safe { color: var(--rose); border-color: rgba(251, 113, 133, 0.35); }
+    .badge.dist { color: var(--teal); border-color: rgba(45, 212, 191, 0.3); }
+
+    .booking-mini {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.75rem;
+      align-items: end;
+    }
+
+    @media (max-width: 520px) {
+      .booking-mini { grid-template-columns: 1fr; }
+    }
+
+    .empty {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    details.api-table {
+      margin-top: 0.5rem;
+    }
+
+    details.api-table summary {
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--muted);
+      padding: 0.5rem 0;
+    }
+
+    details.api-table summary:hover { color: var(--text); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 0.5rem 0.65rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th { color: var(--muted); font-weight: 600; }
+
+    table a { color: var(--teal); text-decoration: none; }
+    table a:hover { text-decoration: underline; }
+
+    footer {
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    footer code {
+      font-size: 0.78em;
+      background: var(--surface);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-mesh" aria-hidden="true"></div>
+  <div class="layout">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">U</div>
+        <div>
+          <h1>UrbanRelief</h1>
+          <span>Local console · same origin as your API</span>
+        </div>
+      </div>
+      <nav>
+        <a href="#discover">Discover</a>
+        <a href="#booking">Booking</a>
+        <a href="#account">Account</a>
+        <a href="#quick-book">Reserve</a>
+        <a href="#api">Routes</a>
+        <a class="primary" href="/docs">Swagger</a>
+        <a href="/redoc">ReDoc</a>
+      </nav>
+    </header>
+
+    <div class="hero">
+      <h2>Stays that fit how you live and travel.</h2>
+      <p>
+        Short-Stay, Bachelor matching, Family-friendly spaces, and Tourism experiences — wired to PostgreSQL, n8n, and your Flutter app.
+        Use this page to try search against your running database.
+      </p>
+      <div class="pillars">
+        <span class="pillar short">Short-Stay</span>
+        <span class="pillar bach">Bachelor</span>
+        <span class="pillar fam">Family</span>
+        <span class="pillar tour">Tourism</span>
+      </div>
+    </div>
+
+    <section class="panel" id="discover">
+      <h3>Discover listings</h3>
+      <div id="search-alert" class="alert err" role="status"></div>
+      <div class="form-grid">
+        <label>Latitude
+          <input type="text" id="lat" value="23.8103" inputmode="decimal" autocomplete="off" />
+        </label>
+        <label>Longitude
+          <input type="text" id="lon" value="90.4125" inputmode="decimal" autocomplete="off" />
+        </label>
+        <label>Radius (km)
+          <input type="number" id="radius" value="80" min="0.1" max="500" step="0.5" />
+        </label>
+        <label>Category
+          <select id="category">
+            <option value="">All</option>
+            <option value="Short-Stay">Short-Stay</option>
+            <option value="Bachelor">Bachelor</option>
+            <option value="Family">Family</option>
+            <option value="Tourism">Tourism</option>
+          </select>
+        </label>
+        <label>Viewer user ID
+          <input type="number" id="viewer" value="" min="1" placeholder="optional" title="For Bachelor compatibility %" />
+        </label>
+      </div>
+      <div class="row-actions">
+        <button type="button" class="search-btn" id="btn-search">Search</button>
+        <label class="toggle">
+          <input type="checkbox" id="female-only" />
+          Safety mode (female-only hosts)
+        </label>
+      </div>
+      <div id="results" class="results" style="margin-top: 1.25rem;"></div>
+      <p id="results-empty" class="empty" style="display: none;">No listings in range. Widen radius or run <code style="font-size:0.85em;">python scripts/seed_demo.py</code>.</p>
+    </section>
+
+    <section class="panel" id="booking">
+      <h3>Booking summary</h3>
+      <div id="booking-alert" class="alert err" role="status"></div>
+      <div class="booking-mini">
+        <label style="margin: 0;">Booking ID
+          <input type="number" id="booking-id" value="1" min="1" />
+        </label>
+        <button type="button" class="search-btn" id="btn-booking">Load summary</button>
+      </div>
+      <pre id="booking-json" style="margin-top:1rem;font-size:0.78rem;background:var(--surface-hover);padding:1rem;border-radius:10px;overflow:auto;border:1px solid var(--border);color:var(--muted);display:none;"></pre>
+      <div class="row-actions" style="margin-top:1rem;">
+        <button type="button" class="search-btn" id="btn-confirm-booking" style="background:linear-gradient(135deg,#64748b,#475569);box-shadow:none;">Confirm booking (demo)</button>
+      </div>
+      <p style="font-size:0.8rem;color:var(--muted);margin-top:0.5rem;">Uses booking ID above. Pending → Confirmed + digital key when DB is up.</p>
+    </section>
+
+    <section class="panel" id="account">
+      <h3>Register guest (browser)</h3>
+      <div id="acct-alert" class="alert err" role="status"></div>
+      <div class="form-grid">
+        <label>Full name
+          <input type="text" id="reg-name" placeholder="Demo Guest" autocomplete="name" />
+        </label>
+        <label>Phone
+          <input type="text" id="reg-phone" placeholder="+8801700000099" autocomplete="tel" />
+        </label>
+        <label>Email
+          <input type="email" id="reg-email" placeholder="you@example.com" autocomplete="email" />
+        </label>
+        <label>Role
+          <select id="reg-role">
+            <option value="Guest">Guest</option>
+            <option value="Host">Host</option>
+          </select>
+        </label>
+      </div>
+      <div class="row-actions">
+        <button type="button" class="search-btn" id="btn-register">Save user</button>
+        <button type="button" class="search-btn" id="btn-clear-user" style="background:linear-gradient(135deg,#64748b,#475569);box-shadow:none;">Clear stored ID</button>
+      </div>
+      <p style="margin-top:1rem;font-size:0.85rem;color:var(--muted);">Stored user id: <strong id="stored-uid" style="color:var(--text);">—</strong> (used below for bookings)</p>
+      <pre id="register-out" style="margin-top:0.75rem;font-size:0.78rem;background:var(--surface-hover);padding:1rem;border-radius:10px;overflow:auto;border:1px solid var(--border);color:var(--muted);display:none;"></pre>
+    </section>
+
+    <section class="panel" id="quick-book">
+      <h3>Create pending booking</h3>
+      <div id="qb-alert" class="alert err" role="status"></div>
+      <div class="form-grid">
+        <label>User id
+          <input type="number" id="qb-user" min="1" placeholder="from register" />
+        </label>
+        <label>Listing id
+          <input type="number" id="qb-listing" min="1" value="1" />
+        </label>
+        <label>Check-in
+          <input type="date" id="qb-in" />
+        </label>
+        <label>Check-out
+          <input type="date" id="qb-out" />
+        </label>
+        <label>Total amount
+          <input type="text" id="qb-amount" placeholder="7000.00" />
+        </label>
+      </div>
+      <button type="button" class="search-btn" id="btn-create-booking">POST /api/v1/bookings</button>
+      <pre id="qb-out" style="margin-top:1rem;font-size:0.78rem;background:var(--surface-hover);padding:1rem;border-radius:10px;overflow:auto;border:1px solid var(--border);color:var(--muted);display:none;"></pre>
+    </section>
+
+    <section class="panel" id="api">
+      <h3>API reference</h3>
+      <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 1rem;">
+        Full interactive docs at <a href="/docs" style="color: var(--teal);">/docs</a>.
+      </p>
+      <details class="api-table" open>
+        <summary>Main HTTP routes</summary>
+        <table>
+          <thead><tr><th></th><th>Path</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr><td>GET</td><td><a href="/">/</a></td><td>This UI</td></tr>
+            <tr><td>GET</td><td><a href="/api">/api</a></td><td>JSON ping</td></tr>
+            <tr><td>POST</td><td>/api/v1/auth/verify-nid</td><td>NID + n8n</td></tr>
+            <tr><td>POST</td><td>/api/v1/users</td><td>Register</td></tr>
+            <tr><td>GET</td><td>/api/v1/listings/search</td><td>Geo search (used above)</td></tr>
+            <tr><td>POST</td><td>/api/v1/bookings</td><td>Create pending</td></tr>
+            <tr><td>GET</td><td>/api/v1/bookings/{id}/summary</td><td>Status &amp; key</td></tr>
+            <tr><td>POST</td><td>/api/v1/bookings/{id}/confirm</td><td>Confirm + n8n</td></tr>
+          </tbody>
+        </table>
+      </details>
+    </section>
+
+    <footer>
+      Flutter: set <code>API_BASE</code> to this origin (e.g. <code>http://127.0.0.1:8000</code>).
+      DB: <code>alembic upgrade head</code> · demo: <code>python scripts/seed_demo.py</code> from <code>backend/</code>.
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      const $ = (id) => document.getElementById(id);
+      const alertEl = $("search-alert");
+      const bookingAlert = $("booking-alert");
+      const resultsEl = $("results");
+      const emptyEl = $("results-empty");
+
+      function showAlert(el, msg, ok) {
+        el.textContent = msg || "";
+        el.className = "alert show " + (ok ? "ok" : "err");
+        if (!msg) el.classList.remove("show");
+      }
+
+      function fmtNum(n, d) {
+        if (n == null || n === "") return "—";
+        var x = Number(n);
+        return isNaN(x) ? "—" : x.toFixed(d);
+      }
+
+      async function runSearch() {
+        showAlert(alertEl, "");
+        emptyEl.style.display = "none";
+        resultsEl.innerHTML = "";
+        var lat = $("lat").value.trim();
+        var lon = $("lon").value.trim();
+        var radius = $("radius").value || "5";
+        var cat = $("category").value;
+        var viewer = $("viewer").value.trim();
+        var female = $("female-only").checked;
+
+        var q = new URLSearchParams({ lat: lat, lon: lon, radius_km: radius });
+        if (cat) q.set("category", cat);
+        if (viewer) q.set("viewer_user_id", viewer);
+        if (female) q.set("female_only", "true");
+
+        $("btn-search").disabled = true;
+        try {
+          var res = await fetch("/api/v1/listings/search?" + q.toString());
+          var data = await res.json().catch(function () { return {}; });
+          if (!res.ok) {
+            showAlert(alertEl, (data.detail || res.statusText || "Request failed") + "", false);
+            emptyEl.style.display = "block";
+            return;
+          }
+          var items = data.items || [];
+          if (!items.length) {
+            emptyEl.style.display = "block";
+            return;
+          }
+          items.forEach(function (it) {
+            var div = document.createElement("div");
+            div.className = "card-listing";
+            var compat = it.compatibility_percent;
+            div.innerHTML =
+              '<div class="title"></div>' +
+              '<div class="meta"></div>' +
+              '<div class="badges"></div>';
+            div.querySelector(".title").textContent = it.title || "Listing";
+            div.querySelector(".meta").textContent =
+              (it.category || "") +
+              " · " +
+              fmtNum(it.distance_km, 1) +
+              " km · rep " +
+              fmtNum(it.host_reputation_score, 2);
+            var badges = div.querySelector(".badges");
+            var dist = document.createElement("span");
+            dist.className = "badge dist";
+            dist.textContent = "id " + (it.id != null ? it.id : "?");
+            badges.appendChild(dist);
+            if (compat != null) {
+              var m = document.createElement("span");
+              m.className = "badge match";
+              m.textContent = fmtNum(compat, 0) + "% match";
+              badges.appendChild(m);
+            }
+            if (it.female_only_host) {
+              var s = document.createElement("span");
+              s.className = "badge safe";
+              s.textContent = "Female-only host";
+              badges.appendChild(s);
+            }
+            resultsEl.appendChild(div);
+          });
+        } catch (e) {
+          showAlert(alertEl, String(e.message || e), false);
+          emptyEl.style.display = "block";
+        } finally {
+          $("btn-search").disabled = false;
+        }
+      }
+
+      $("btn-search").addEventListener("click", runSearch);
+
+      $("btn-booking").addEventListener("click", async function () {
+        showAlert(bookingAlert, "");
+        var id = $("booking-id").value.trim();
+        var pre = $("booking-json");
+        pre.style.display = "none";
+        if (!id) {
+          showAlert(bookingAlert, "Enter a booking ID", false);
+          return;
+        }
+        $("btn-booking").disabled = true;
+        try {
+          var res = await fetch("/api/v1/bookings/" + encodeURIComponent(id) + "/summary");
+          var data = await res.json().catch(function () { return {}; });
+          if (!res.ok) {
+            showAlert(bookingAlert, (data.detail || res.statusText || "Failed") + "", false);
+            return;
+          }
+          pre.textContent = JSON.stringify(data, null, 2);
+          pre.style.display = "block";
+          showAlert(bookingAlert, "Loaded", true);
+        } catch (e) {
+          showAlert(bookingAlert, String(e.message || e), false);
+        } finally {
+          $("btn-booking").disabled = false;
+        }
+      });
+
+      var LS_UID = "urbanrelief_user_id";
+
+      function showAcct(el, msg, ok) {
+        el.textContent = msg || "";
+        el.className = "alert show " + (ok ? "ok" : "err");
+        if (!msg) el.classList.remove("show");
+      }
+
+      function refreshStoredUid() {
+        var v = localStorage.getItem(LS_UID);
+        $("stored-uid").textContent = v || "—";
+        if (v && !$("qb-user").value) $("qb-user").value = v;
+      }
+
+      $("btn-register").addEventListener("click", async function () {
+        var el = $("acct-alert");
+        showAcct(el, "");
+        var body = {
+          full_name: $("reg-name").value.trim(),
+          phone: $("reg-phone").value.trim(),
+          email: $("reg-email").value.trim(),
+          role: $("reg-role").value
+        };
+        if (!body.full_name || !body.phone || !body.email) {
+          showAcct(el, "Name, phone, and email required", false);
+          return;
+        }
+        $("btn-register").disabled = true;
+        try {
+          var res = await fetch("/api/v1/users", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify(body)
+          });
+          var data = await res.json().catch(function () { return {}; });
+          if (!res.ok) {
+            showAcct(el, (data.detail || res.statusText) + "", false);
+            return;
+          }
+          localStorage.setItem(LS_UID, String(data.id));
+          refreshStoredUid();
+          $("register-out").textContent = JSON.stringify(data, null, 2);
+          $("register-out").style.display = "block";
+          showAcct(el, "User #" + data.id + " saved", true);
+        } catch (e) {
+          showAcct(el, String(e.message || e), false);
+        } finally {
+          $("btn-register").disabled = false;
+        }
+      });
+
+      $("btn-clear-user").addEventListener("click", function () {
+        localStorage.removeItem(LS_UID);
+        refreshStoredUid();
+        showAcct($("acct-alert"), "Cleared", true);
+      });
+
+      function isoAddDays(days) {
+        var d = new Date();
+        d.setDate(d.getDate() + days);
+        return d.toISOString().slice(0, 10);
+      }
+      $("qb-in").value = isoAddDays(1);
+      $("qb-out").value = isoAddDays(3);
+
+      $("btn-create-booking").addEventListener("click", async function () {
+        var el = $("qb-alert");
+        showAcct(el, "");
+        var uid = $("qb-user").value.trim();
+        var lid = $("qb-listing").value.trim();
+        var cin = $("qb-in").value;
+        var cout = $("qb-out").value;
+        var amt = $("qb-amount").value.trim();
+        if (!uid || !lid || !cin || !cout || !amt) {
+          showAcct(el, "Fill all fields", false);
+          return;
+        }
+        $("btn-create-booking").disabled = true;
+        try {
+          var res = await fetch("/api/v1/bookings", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify({
+              user_id: Number(uid),
+              listing_id: Number(lid),
+              check_in: cin,
+              check_out: cout,
+              total_amount: amt
+            })
+          });
+          var data = await res.json().catch(function () { return {}; });
+          if (!res.ok) {
+            showAcct(el, (data.detail || res.statusText) + "", false);
+            return;
+          }
+          $("booking-id").value = String(data.id);
+          $("qb-out").textContent = JSON.stringify(data, null, 2);
+          $("qb-out").style.display = "block";
+          showAcct(el, "Created booking #" + data.id, true);
+        } catch (e) {
+          showAcct(el, String(e.message || e), false);
+        } finally {
+          $("btn-create-booking").disabled = false;
+        }
+      });
+
+      $("btn-confirm-booking").addEventListener("click", async function () {
+        var id = $("booking-id").value.trim();
+        showAlert(bookingAlert, "");
+        if (!id) {
+          showAlert(bookingAlert, "Set booking ID first", false);
+          return;
+        }
+        $("btn-confirm-booking").disabled = true;
+        try {
+          var res = await fetch("/api/v1/bookings/" + encodeURIComponent(id) + "/confirm", {
+            method: "POST",
+            headers: { Accept: "application/json" }
+          });
+          var data = await res.json().catch(function () { return {}; });
+          if (!res.ok) {
+            showAlert(bookingAlert, (data.detail || res.statusText) + "", false);
+            return;
+          }
+          $("booking-json").textContent = JSON.stringify(data.summary || data, null, 2);
+          $("booking-json").style.display = "block";
+          showAlert(bookingAlert, "Confirmed", true);
+        } catch (e) {
+          showAlert(bookingAlert, String(e.message || e), false);
+        } finally {
+          $("btn-confirm-booking").disabled = false;
+        }
+      });
+
+      refreshStoredUid();
+      runSearch();
+    })();
+  </script>
+</body>
+</html>

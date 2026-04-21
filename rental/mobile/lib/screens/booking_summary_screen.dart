@@ -88,6 +88,8 @@ class _BookingSummaryScreenState extends State<BookingSummaryScreen> {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
+            final err = snapshot.error;
+            final message = err is BookingApiException ? err.message : err.toString();
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(24),
@@ -97,7 +99,7 @@ class _BookingSummaryScreenState extends State<BookingSummaryScreen> {
                     Icon(Icons.error_outline, size: 48, color: theme.colorScheme.error),
                     const SizedBox(height: 16),
                     Text(
-                      snapshot.error.toString(),
+                      message,
                       textAlign: TextAlign.center,
                       style: theme.textTheme.bodyMedium,
                     ),
@@ -109,6 +111,8 @@ class _BookingSummaryScreenState extends State<BookingSummaryScreen> {
             );
           }
           final s = snapshot.data!;
+          final canConfirm =
+              s.status.toLowerCase() == 'pending';
 
           return ListView(
             padding: const EdgeInsets.all(20),
@@ -122,6 +126,30 @@ class _BookingSummaryScreenState extends State<BookingSummaryScreen> {
               const SizedBox(height: 4),
               Text('${s.checkIn} → ${s.checkOut}'),
               Text('Total: ${s.totalAmount}'),
+              if (canConfirm) ...[
+                const SizedBox(height: 20),
+                FilledButton.tonal(
+                  onPressed: () async {
+                    try {
+                      await confirmBooking(widget.bookingId);
+                      if (!context.mounted) return;
+                      await _reload();
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Booking confirmed')),
+                        );
+                      }
+                    } on BookingApiException catch (e) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(e.message)),
+                        );
+                      }
+                    }
+                  },
+                  child: const Text('Confirm booking (demo)'),
+                ),
+              ],
               const SizedBox(height: 28),
               Text(
                 'Digital key (OTP)',

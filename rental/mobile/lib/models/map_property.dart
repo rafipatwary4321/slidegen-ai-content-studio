@@ -10,6 +10,9 @@ class MapProperty {
     required this.longitude,
     required this.category,
     this.femaleOnlyHost = false,
+    this.matchScore,
+    this.hasGuide = false,
+    this.gearRental = const [],
   });
 
   final String id;
@@ -20,4 +23,11 @@ class MapProperty {
 
   /// Host opted into female-only / Safety Mode listings (client filter).
   final bool femaleOnlyHost;
+
+  /// Bachelor match score from backend explore/search endpoint.
+  final double? matchScore;
+
+  /// Tourism-specific flags for detail actions.
+  final bool hasGuide;
+  final List<String> gearRental;
 }

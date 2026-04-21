@@ -12,8 +12,15 @@ class ListingBase(BaseModel):
     category: ListingCategory
     latitude: float
     longitude: float
+    price: Decimal | None = None
     price_daily: Decimal | None = None
     price_monthly: Decimal | None = None
+    lifestyle_profile_id: int | None = None
+    has_guide: bool = False
+    gear_rental: list[Any] | None = None
+    gear_available: list[Any] | None = None
+    guide_price: Decimal | None = None
+    available_gear: list[Any] | None = None
     amenities: dict[str, Any] | list[Any] | None = None
 
 
@@ -29,6 +36,11 @@ class ListingUpdate(BaseModel):
     longitude: float | None = None
     price_daily: Decimal | None = None
     price_monthly: Decimal | None = None
+    has_guide: bool | None = None
+    gear_rental: list[Any] | None = None
+    guide_price: Decimal | None = None
+    gear_available: list[Any] | None = None
+    available_gear: list[Any] | None = None
     amenities: dict[str, Any] | list[Any] | None = None
 
 
@@ -54,7 +66,11 @@ class ListingSearchItem(BaseModel):
     )
     compatibility_percent: float | None = Field(
         None,
-        description="Bachelor-only: mean compatibility % vs mess (smoking, job, sleep, cleanliness)",
+        description="Bachelor-only: mean compatibility % vs mess (smoking, sleep, job)",
+    )
+    match_score: float | None = Field(
+        None,
+        description="Bachelor-only matchmaking score (0-100) based on smoking, sleep cycle and job type",
     )
     female_only_host: bool = Field(
         False,
@@ -66,3 +82,7 @@ class ListingSearchItem(BaseModel):
 
 class ListingSearchResponse(BaseModel):
     items: list[ListingSearchItem]
+
+
+class ListingExploreItem(ListingRead):
+    match_score: float | None = None

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import logging
 
 from sqlalchemy import select
@@ -8,10 +9,8 @@ from sqlalchemy.orm import Session, joinedload
 from app.models.booking import Booking
 from app.models.enums import BookingStatus
 from app.models.listing import Listing
-from app.services.automation import (
-    agreement_url_from_n8n_response,
-    generate_digital_agreement_sync,
-)
+from app.services.automation import agreement_url_from_n8n_response
+from app.services.automation_service import trigger_n8n_webhook
 from app.services.digital_key import generate_unique_digital_key
 
 logger = logging.getLogger(__name__)
@@ -60,19 +59,21 @@ def confirm_booking(db: Session, booking_id: int) -> tuple[Booking, bool]:
     host = listing.owner
 
     try:
-        n8n_result = generate_digital_agreement_sync(
-            booking_id=booking.id,
-            listing_id=listing.id,
-            listing_title=listing.title,
-            guest_email=guest.email,
-            host_email=host.email,
-            start_date=booking.check_in,
-            end_date=booking.check_out,
-            total_price=booking.total_amount,
-            guest_name=guest.full_name,
-            host_name=host.full_name,
-            extra={"digital_key": booking.digital_key},
-        )
+        payload = {
+            "event": "rental_agreement_pdf",
+            "booking_id": booking.id,
+            "listing_id": listing.id,
+            "listing_title": listing.title,
+            "guest_email": guest.email,
+            "host_email": host.email,
+            "guest_name": guest.full_name,
+            "host_name": host.full_name,
+            "start_date": booking.check_in.isoformat(),
+            "end_date": booking.check_out.isoformat(),
+            "total_price": str(booking.total_amount),
+            "meta": {"digital_key": booking.digital_key},
+        }
+        n8n_result = asyncio.run(trigger_n8n_webhook("N8N_AGREEMENT_WEBHOOK_URL", payload))
         url = agreement_url_from_n8n_response(n8n_result)
         if url:
             booking.agreement_document_url = url

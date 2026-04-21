@@ -11,12 +11,13 @@ enum PropertyCategory {
   final String apiValue;
 }
 
-/// Marker tint: Tourism = green, Bachelor = blue (per product brief).
+/// Marker tint mapping:
+/// Bachelor = blue, Short-stay = green, Tourism = orange, Family = red.
 double markerHueForCategory(PropertyCategory category) {
   return switch (category) {
-    PropertyCategory.tourism => BitmapDescriptor.hueGreen,
+    PropertyCategory.shortStay => BitmapDescriptor.hueGreen,
     PropertyCategory.bachelor => BitmapDescriptor.hueBlue,
-    PropertyCategory.shortStay => BitmapDescriptor.hueOrange,
-    PropertyCategory.family => BitmapDescriptor.hueViolet,
+    PropertyCategory.tourism => BitmapDescriptor.hueOrange,
+    PropertyCategory.family => BitmapDescriptor.hueRed,
   };
 }

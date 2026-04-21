@@ -21,7 +21,8 @@ load_dotenv(BACKEND / ".env")
 from sqlalchemy import create_engine  # noqa: E402
 
 from app.core.database import Base  # noqa: E402
-import app.models  # noqa: E402, F401
+
+import app.models  # noqa: E402, F401  # pylint: disable=unused-import  # registers ORM mappers
 
 
 def main() -> None:

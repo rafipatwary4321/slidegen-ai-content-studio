@@ -1,0 +1,8 @@
+[MAIN]
+# Resolve `app.*` when CWD is repo root (`rental/`) or `backend/`.
+init-hook=import sys; from pathlib import Path; _c = Path.cwd(); _roots = [p for p in (_c, _c / "backend") if (p / "app").is_dir()]; _roots and sys.path.insert(0, str(_roots[0]))
+
+[MESSAGES CONTROL]
+# Prefer Pylance/Pyright for import resolution; Pylint often runs on a Python without the venv.
+disable =
+    import-error,

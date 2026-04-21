@@ -25,7 +25,7 @@ class Settings:
 
     database_url: str = os.getenv("DATABASE_URL", "")
     # n8n: prefer new names; fall back to legacy vars for existing deployments
-    n8n_nid_webhook: str = _first_env("N8N_NID_WEBHOOK", "N8N_WEBHOOK_URL")
+    n8n_nid_webhook: str = _first_env("N8N_NID_WEBHOOK", "N8N_NID_WEBHOOK_URL", "N8N_WEBHOOK_URL")
     n8n_agreement_webhook: str = _first_env(
         "N8N_AGREEMENT_WEBHOOK",
         "N8N_AGREEMENT_WEBHOOK_URL",
