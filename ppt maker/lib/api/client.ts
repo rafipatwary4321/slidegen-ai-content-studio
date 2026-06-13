@@ -7,6 +7,14 @@ import type {
   PromptToDesignRequest,
   PromptToDesignResponse
 } from "@/lib/content-studio/types";
+import type {
+  NewsPhotocardAiCopyRequest,
+  NewsPhotocardAiCopyResponse,
+  NewsPhotocardExportRequest,
+  NewsPhotocardExportResponse,
+  NewsPhotocardGenerateRequest,
+  NewsPhotocardGenerateResponse
+} from "@/lib/news-photocard/types";
 import {
   AnalyzeResponse,
   AuthResponse,
@@ -155,6 +163,33 @@ export async function generateContent(payload: ContentGenerateRequest): Promise<
     message: raw.message,
     project: mapStudioProject(raw.project)
   };
+}
+
+export async function generateNewsPhotocard(
+  payload: NewsPhotocardGenerateRequest
+): Promise<NewsPhotocardGenerateResponse> {
+  return apiRequest<NewsPhotocardGenerateResponse>("/api/v1/content/generate/news-photocard", {
+    method: "POST",
+    body: payload
+  });
+}
+
+export async function generateNewsPhotocardAiCopy(
+  payload: NewsPhotocardAiCopyRequest
+): Promise<NewsPhotocardAiCopyResponse> {
+  return apiRequest<NewsPhotocardAiCopyResponse>("/api/v1/content/generate/news-photocard/ai-copy", {
+    method: "POST",
+    body: payload
+  });
+}
+
+export async function registerNewsPhotocardExport(
+  payload: NewsPhotocardExportRequest
+): Promise<NewsPhotocardExportResponse> {
+  return apiRequest<NewsPhotocardExportResponse>("/api/v1/content/export/news-photocard", {
+    method: "POST",
+    body: payload
+  });
 }
 
 export async function classifyIntent(prompt: string): Promise<IntentClassification> {

@@ -1,11 +1,12 @@
 import Link from "next/link";
 import type { Route } from "next";
-import { History, LayoutGrid, PlusCircle, Sparkles } from "lucide-react";
+import { History, LayoutGrid, Newspaper, PlusCircle, Sparkles } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 const navItems = [
   { href: "/dashboard", label: "Marketplace", icon: LayoutGrid },
   { href: "/dashboard/new", label: "New Presentation", icon: PlusCircle },
+  { href: "/dashboard/generate/news-photocard", label: "News Photocard", icon: Newspaper },
   { href: "/dashboard/history", label: "History", icon: History }
 ] as const satisfies ReadonlyArray<{ href: Route; label: string; icon: LucideIcon }>;
 

@@ -23,6 +23,9 @@ export function CategoryWorkspace({ categoryId }: CategoryWorkspaceProps) {
     if (categoryId === "presentations") {
       router.replace("/dashboard/new");
     }
+    if (categoryId === "news-photocards") {
+      router.replace("/dashboard/generate/news-photocard" as Route);
+    }
   }, [categoryId, router]);
 
   if (!category) {
@@ -38,6 +41,10 @@ export function CategoryWorkspace({ categoryId }: CategoryWorkspaceProps) {
 
   if (categoryId === "presentations") {
     return <p className="text-sm text-slate-400">Redirecting to presentation generator…</p>;
+  }
+
+  if (categoryId === "news-photocards") {
+    return <p className="text-sm text-slate-400">Redirecting to news photocard generator…</p>;
   }
 
   const Icon = categoryIcon(category.icon);

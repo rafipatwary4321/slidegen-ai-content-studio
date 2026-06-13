@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse
 
 from app.models.content_schemas import (
@@ -11,14 +11,26 @@ from app.models.content_schemas import (
     PromptToDesignRequest,
     PromptToDesignResponse,
 )
+from app.models.news_photocard_schemas import (
+    NewsPhotocardAiCopyRequest,
+    NewsPhotocardAiCopyResponse,
+    NewsPhotocardExportRequest,
+    NewsPhotocardExportResponse,
+    NewsPhotocardGenerateRequest,
+    NewsPhotocardGenerateResponse,
+)
 from app.services.content_export_service import EXPORT_DIR, ContentExportService
 from app.services.content_generation_service import ContentGenerationService
+from app.services.news_photocard_export_service import NewsPhotocardExportService
+from app.services.news_photocard_service import NewsPhotocardService
 from app.services.prompt_to_design_service import PromptToDesignService
 
 router = APIRouter()
 generator = ContentGenerationService()
 exporter = ContentExportService()
 prompt_to_design = PromptToDesignService()
+news_photocard = NewsPhotocardService()
+news_photocard_export = NewsPhotocardExportService()
 
 
 @router.post("/content/classify-intent", response_model=IntentClassifyResponse)
@@ -35,6 +47,24 @@ def run_prompt_to_design(payload: PromptToDesignRequest) -> PromptToDesignRespon
 def generate_content(payload: ContentGenerateRequest) -> ContentGenerateResponse:
     project = generator.generate(payload)
     return ContentGenerateResponse(success=True, message="Design generated.", project=project)
+
+
+@router.post("/content/generate/news-photocard", response_model=NewsPhotocardGenerateResponse)
+def generate_news_photocard(payload: NewsPhotocardGenerateRequest) -> NewsPhotocardGenerateResponse:
+    try:
+        return news_photocard.generate(payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@router.post("/content/generate/news-photocard/ai-copy", response_model=NewsPhotocardAiCopyResponse)
+def generate_news_photocard_ai_copy(payload: NewsPhotocardAiCopyRequest) -> NewsPhotocardAiCopyResponse:
+    return news_photocard.generate_copy(payload)
+
+
+@router.post("/content/export/news-photocard", response_model=NewsPhotocardExportResponse)
+def register_news_photocard_export(payload: NewsPhotocardExportRequest) -> NewsPhotocardExportResponse:
+    return news_photocard_export.register_export(payload)
 
 
 @router.post("/content/export", response_model=ContentExportResponse)

@@ -19,10 +19,11 @@ export const CONTENT_CATEGORIES: ContentCategory[] = [
     description: "Editorial photocards for digital newsrooms.",
     icon: "Newspaper",
     defaultAspectRatio: "4:5",
-    supportedAspectRatios: ["1:1", "4:5", "16:9"],
+    supportedAspectRatios: ["1:1", "4:5", "9:16"],
     supportedExports: ["png", "jpg", "pdf"],
     gradient: "from-rose-600/70 to-orange-500/50",
-    tags: ["news", "media"]
+    tags: ["news", "media"],
+    legacyRoute: "/dashboard/generate/news-photocard"
   },
   {
     id: "breaking-news-cards",

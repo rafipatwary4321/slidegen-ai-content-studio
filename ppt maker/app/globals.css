@@ -1,9 +1,12 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
   color-scheme: dark;
+  --font-bengali: "Noto Sans Bengali", "Noto Sans", system-ui, sans-serif;
 }
 
 html,
