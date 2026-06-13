@@ -1,0 +1,38 @@
+{
+  "name": "slidegen-ai",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3000 -H 127.0.0.1",
+    "dev:next": "next dev -p 3000 -H 127.0.0.1",
+    "dev:backend": "node scripts/backend-dev.cjs",
+    "dev:all": "concurrently -k -n web,api -c cyan,magenta \"npm run dev:next\" \"npm run dev:backend\"",
+    "dev:clean": "node scripts/clean-next.cjs && npm run dev:all",
+    "setup:backend": "node scripts/backend-dev.cjs --install-only",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.453.0",
+    "next": "14.2.15",
+    "next-auth": "^4.24.14",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwind-merge": "^2.5.4",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "@types/node": "^22.8.6",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "autoprefixer": "^10.4.20",
+    "concurrently": "^9.1.2",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "14.2.15",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.14",
+    "typescript": "^5.6.3"
+  }
+}

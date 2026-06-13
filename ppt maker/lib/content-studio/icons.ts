@@ -1,0 +1,60 @@
+import {
+  Award,
+  BarChart3,
+  BookOpen,
+  Briefcase,
+  Calendar,
+  CreditCard,
+  FileImage,
+  GraduationCap,
+  HandHeart,
+  Heart,
+  Home,
+  Instagram,
+  Landmark,
+  Layout,
+  Megaphone,
+  MessageSquare,
+  Mic,
+  Newspaper,
+  Presentation,
+  Share2,
+  ShoppingBag,
+  Smartphone,
+  UtensilsCrossed,
+  Youtube,
+  Zap,
+  type LucideIcon
+} from "lucide-react";
+
+const ICON_MAP: Record<string, LucideIcon> = {
+  Presentation,
+  Newspaper,
+  Zap,
+  Calendar,
+  Share2,
+  Instagram,
+  Smartphone,
+  Layout,
+  Youtube,
+  MessageSquare,
+  Landmark,
+  GraduationCap,
+  Award,
+  CreditCard,
+  FileImage,
+  BookOpen,
+  BarChart3,
+  Briefcase,
+  Heart,
+  Megaphone,
+  ShoppingBag,
+  HandHeart,
+  Home,
+  UtensilsCrossed,
+  Mic
+};
+
+export function categoryIcon(name: string): LucideIcon {
+  return ICON_MAP[name] ?? Presentation;
+}

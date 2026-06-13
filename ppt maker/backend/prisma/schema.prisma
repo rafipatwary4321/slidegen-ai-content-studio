@@ -1,0 +1,138 @@
+generator client {
+  provider  = "prisma-client-py"
+  interface = "sync"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PresentationStatus {
+  draft
+  generated
+  revised
+  exported
+}
+
+enum UploadStatus {
+  uploaded
+  analyzed
+  failed
+}
+
+enum ExportStatus {
+  ready
+  failed
+}
+
+model User {
+  id             String        @id @default(cuid())
+  email          String        @unique
+  name           String?
+  password_hash  String
+  uploaded_files UploadedFile[]
+  presentations  Presentation[]
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @updatedAt
+}
+
+model UploadedFile {
+  id              String       @id @default(cuid())
+  filename        String
+  content_type    String
+  extension       String
+  size_bytes      Int
+  file_hash       String       @unique
+  parser_status   String
+  word_count      Int
+  character_count Int
+  preview_snippet String
+  status          UploadStatus @default(uploaded)
+  user_id         String?
+  user            User?        @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  presentations   Presentation[]
+  created_at      DateTime     @default(now())
+  updated_at      DateTime     @updatedAt
+
+  @@index([filename])
+}
+
+model Presentation {
+  id                String             @id @default(cuid())
+  title             String
+  uploaded_filename String
+  persona           String
+  theme             String
+  status            PresentationStatus @default(draft)
+  pptx_file_path    String?
+  user_id           String?
+  user              User?              @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  uploaded_file_id  String?
+  uploaded_file     UploadedFile?      @relation(fields: [uploaded_file_id], references: [id], onDelete: SetNull)
+  slides            Slide[]
+  speaker_notes     SpeakerNote[]
+  revision_prompts  RevisionPrompt[]
+  exported_files    ExportedFile[]
+  created_at        DateTime           @default(now())
+  updated_at        DateTime           @updatedAt
+
+  @@index([created_at])
+  @@index([status])
+}
+
+model Slide {
+  id              String       @id @default(cuid())
+  presentation_id String
+  presentation    Presentation @relation(fields: [presentation_id], references: [id], onDelete: Cascade)
+  slide_number    Int
+  title           String
+  bullets         Json
+  created_at      DateTime     @default(now())
+  updated_at      DateTime     @updatedAt
+
+  @@unique([presentation_id, slide_number])
+}
+
+model SpeakerNote {
+  id              String       @id @default(cuid())
+  presentation_id String
+  presentation    Presentation @relation(fields: [presentation_id], references: [id], onDelete: Cascade)
+  slide_number    Int
+  note            String
+  created_at      DateTime     @default(now())
+  updated_at      DateTime     @updatedAt
+
+  @@unique([presentation_id, slide_number])
+}
+
+model RevisionPrompt {
+  id               String             @id @default(cuid())
+  presentation_id  String
+  presentation     Presentation       @relation(fields: [presentation_id], references: [id], onDelete: Cascade)
+  instruction      String
+  previous_outline Json
+  updated_outline  Json
+  status           PresentationStatus @default(revised)
+  created_at       DateTime           @default(now())
+  updated_at       DateTime           @updatedAt
+
+  @@index([created_at])
+}
+
+model ExportedFile {
+  id              String       @id @default(cuid())
+  presentation_id String
+  presentation    Presentation @relation(fields: [presentation_id], references: [id], onDelete: Cascade)
+  export_id       String       @unique
+  title           String
+  theme           String
+  slide_count     Int
+  file_path       String
+  download_url    String
+  status          ExportStatus @default(ready)
+  created_at      DateTime     @default(now())
+  updated_at      DateTime     @updatedAt
+
+  @@index([created_at])
+}
