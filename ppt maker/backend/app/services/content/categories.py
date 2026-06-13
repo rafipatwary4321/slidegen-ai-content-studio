@@ -64,6 +64,13 @@ CATEGORY_SPECS: dict[str, CategorySpec] = {
     "real-estate-templates": CategorySpec("real-estate-templates", "Real Estate", "16:9", ("png", "pdf"), "Property listing card."),
     "restaurant-marketing": CategorySpec("restaurant-marketing", "Restaurant", "1:1", ("png", "jpg"), "Menu promo or dish highlight."),
     "podcast-covers": CategorySpec("podcast-covers", "Podcast Covers", "1:1", ("png", "jpg"), "Podcast cover art square."),
+    "poster-generator": CategorySpec(
+        "poster-generator",
+        "Poster Generator",
+        "A4",
+        ("png", "pdf", "jpg"),
+        "Marketing poster with title, subtitle, date, venue, organizer, and CTA.",
+    ),
 }
 
 

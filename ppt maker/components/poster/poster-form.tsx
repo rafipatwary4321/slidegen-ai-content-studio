@@ -3,29 +3,30 @@
 import { useRef } from "react";
 import {
   AlignLeft,
+  Calendar,
   Globe,
   ImagePlus,
   LayoutGrid,
-  Palette,
+  MapPin,
+  Megaphone,
   Sparkles,
-  Tag,
   Upload,
+  User,
   Volume2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
-  NEWS_ASPECT_RATIOS,
-  NEWS_CATEGORIES,
-  NEWS_DESIGN_STYLES,
-  NEWS_LANGUAGES,
-  NEWS_TONES
-} from "@/lib/news-photocard/constants";
-import type { NewsPhotocardFormState } from "@/lib/news-photocard/types";
+  POSTER_ASPECT_RATIOS,
+  POSTER_DESIGN_TONES,
+  POSTER_LANGUAGES,
+  POSTER_TYPES
+} from "@/lib/poster/constants";
+import type { PosterFormState } from "@/lib/poster/types";
 
-interface NewsPhotocardFormProps {
-  value: NewsPhotocardFormState;
-  onChange: (next: NewsPhotocardFormState) => void;
+interface PosterFormProps {
+  value: PosterFormState;
+  onChange: (next: PosterFormState) => void;
   onGenerate: () => void;
   onAiCopy?: () => void;
   loading?: boolean;
@@ -66,7 +67,7 @@ function FormSection({
   );
 }
 
-export function NewsPhotocardForm({
+export function PosterForm({
   value,
   onChange,
   onGenerate,
@@ -74,61 +75,112 @@ export function NewsPhotocardForm({
   loading = false,
   aiLoading = false,
   disabled = false
-}: NewsPhotocardFormProps) {
+}: PosterFormProps) {
   const logoRef = useRef<HTMLInputElement>(null);
   const imageRef = useRef<HTMLInputElement>(null);
 
-  function patch(partial: Partial<NewsPhotocardFormState>) {
+  function patch(partial: Partial<PosterFormState>) {
     onChange({ ...value, ...partial });
   }
 
   return (
     <div className="space-y-5">
-      <FormSection icon={AlignLeft} title="Headline & copy" subtitle="Primary news text shown on the photocard.">
+      <FormSection icon={AlignLeft} title="Poster copy">
         <div className="space-y-3">
           <div>
-            <label className="studio-section-label">Headline</label>
+            <label className="studio-section-label">Poster title</label>
             <input
               className="studio-input"
-              value={value.headline}
-              onChange={(e) => patch({ headline: e.target.value })}
-              placeholder="Breaking: Major policy announcement (or use AI prompt below)"
+              value={value.title}
+              onChange={(e) => patch({ title: e.target.value })}
+              placeholder="Annual Innovation Summit 2026 (or use AI prompt below)"
               disabled={disabled}
             />
           </div>
           <div>
-            <label className="studio-section-label">Subheadline</label>
+            <label className="studio-section-label">Subtitle</label>
             <textarea
               className="studio-input min-h-[80px] resize-y"
-              value={value.subheadline}
-              onChange={(e) => patch({ subheadline: e.target.value })}
-              placeholder="Supporting context or dek line"
+              value={value.subtitle}
+              onChange={(e) => patch({ subtitle: e.target.value })}
+              placeholder="Supporting tagline or event description"
               disabled={disabled}
             />
           </div>
         </div>
       </FormSection>
 
-      <FormSection icon={Tag} title="News category">
+      <FormSection icon={Megaphone} title="Poster type">
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-          {NEWS_CATEGORIES.map((cat) => (
+          {POSTER_TYPES.map((type) => (
             <button
-              key={cat.id}
+              key={type.id}
               type="button"
               disabled={disabled}
-              onClick={() => patch({ newsCategory: cat.id })}
-              className={optionClass(value.newsCategory === cat.id)}
+              onClick={() => patch({ posterType: type.id })}
+              className={optionClass(value.posterType === type.id)}
             >
-              {cat.label}
+              {type.label}
             </button>
           ))}
+        </div>
+      </FormSection>
+
+      <FormSection icon={Calendar} title="Event details (optional)">
+        <div className="space-y-3">
+          <div>
+            <label className="studio-section-label flex items-center gap-1.5">
+              <Calendar className="h-3.5 w-3.5 text-cyan-300" /> Date / time
+            </label>
+            <input
+              className="studio-input"
+              value={value.dateTime}
+              onChange={(e) => patch({ dateTime: e.target.value })}
+              placeholder="Saturday, 14 June 2026 · 10:00 AM"
+              disabled={disabled}
+            />
+          </div>
+          <div>
+            <label className="studio-section-label flex items-center gap-1.5">
+              <MapPin className="h-3.5 w-3.5 text-cyan-300" /> Venue / location
+            </label>
+            <input
+              className="studio-input"
+              value={value.venue}
+              onChange={(e) => patch({ venue: e.target.value })}
+              placeholder="Grand Convention Hall, Dhaka"
+              disabled={disabled}
+            />
+          </div>
+          <div>
+            <label className="studio-section-label flex items-center gap-1.5">
+              <User className="h-3.5 w-3.5 text-cyan-300" /> Organizer
+            </label>
+            <input
+              className="studio-input"
+              value={value.organizer}
+              onChange={(e) => patch({ organizer: e.target.value })}
+              placeholder="SlideGen Events"
+              disabled={disabled}
+            />
+          </div>
+          <div>
+            <label className="studio-section-label">Call-to-action text</label>
+            <input
+              className="studio-input"
+              value={value.ctaText}
+              onChange={(e) => patch({ ctaText: e.target.value })}
+              placeholder="Register Now"
+              disabled={disabled}
+            />
+          </div>
         </div>
       </FormSection>
 
       <div className="grid gap-5 sm:grid-cols-2">
         <FormSection icon={Globe} title="Language">
           <div className="grid grid-cols-2 gap-2">
-            {NEWS_LANGUAGES.map((lang) => (
+            {POSTER_LANGUAGES.map((lang) => (
               <button
                 key={lang.id}
                 type="button"
@@ -143,8 +195,8 @@ export function NewsPhotocardForm({
         </FormSection>
 
         <FormSection icon={LayoutGrid} title="Aspect ratio">
-          <div className="grid grid-cols-3 gap-2">
-            {NEWS_ASPECT_RATIOS.map((ratio) => (
+          <div className="grid grid-cols-2 gap-2">
+            {POSTER_ASPECT_RATIOS.map((ratio) => (
               <button
                 key={ratio.id}
                 type="button"
@@ -159,15 +211,15 @@ export function NewsPhotocardForm({
         </FormSection>
       </div>
 
-      <FormSection icon={Volume2} title="Tone">
+      <FormSection icon={Volume2} title="Design tone">
         <div className="grid gap-2 sm:grid-cols-2">
-          {NEWS_TONES.map((tone) => (
+          {POSTER_DESIGN_TONES.map((tone) => (
             <button
               key={tone.id}
               type="button"
               disabled={disabled}
-              onClick={() => patch({ tone: tone.id })}
-              className={optionClass(value.tone === tone.id)}
+              onClick={() => patch({ designTone: tone.id })}
+              className={optionClass(value.designTone === tone.id)}
             >
               <span className="block font-semibold">{tone.label}</span>
               <span className="mt-0.5 block text-[10px] font-normal text-slate-400">{tone.description}</span>
@@ -176,60 +228,18 @@ export function NewsPhotocardForm({
         </div>
       </FormSection>
 
-      <FormSection icon={Palette} title="Theme" subtitle="Dark red, black, white, or gold palette.">
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-          {NEWS_DESIGN_STYLES.map((style) => (
-            <button
-              key={style.id}
-              type="button"
-              disabled={disabled}
-              onClick={() => patch({ designStyle: style.id })}
-              className={cn(optionClass(value.designStyle === style.id), "flex items-center gap-2")}
-            >
-              <span
-                className="h-4 w-4 shrink-0 rounded-full border border-white/20"
-                style={{ backgroundColor: style.swatch }}
-              />
-              {style.label}
-            </button>
-          ))}
-        </div>
-      </FormSection>
-
       <FormSection icon={ImagePlus} title="Assets (optional)">
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="studio-upload-zone">
-            <input
-              ref={logoRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => patch({ logoFile: e.target.files?.[0] ?? null })}
-            />
-            <button
-              type="button"
-              disabled={disabled}
-              onClick={() => logoRef.current?.click()}
-              className="flex w-full items-center gap-2.5 text-left text-xs text-slate-300 hover:text-white"
-            >
+            <input ref={logoRef} type="file" accept="image/*" className="hidden" onChange={(e) => patch({ logoFile: e.target.files?.[0] ?? null })} />
+            <button type="button" disabled={disabled} onClick={() => logoRef.current?.click()} className="flex w-full items-center gap-2.5 text-left text-xs text-slate-300 hover:text-white">
               <Upload className="h-4 w-4 shrink-0 text-cyan-300" />
               <span className="truncate">{value.logoFile ? value.logoFile.name : "Upload logo"}</span>
             </button>
           </div>
           <div className="studio-upload-zone">
-            <input
-              ref={imageRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => patch({ imageFile: e.target.files?.[0] ?? null })}
-            />
-            <button
-              type="button"
-              disabled={disabled}
-              onClick={() => imageRef.current?.click()}
-              className="flex w-full items-center gap-2.5 text-left text-xs text-slate-300 hover:text-white"
-            >
+            <input ref={imageRef} type="file" accept="image/*" className="hidden" onChange={(e) => patch({ imageFile: e.target.files?.[0] ?? null })} />
+            <button type="button" disabled={disabled} onClick={() => imageRef.current?.click()} className="flex w-full items-center gap-2.5 text-left text-xs text-slate-300 hover:text-white">
               <ImagePlus className="h-4 w-4 shrink-0 text-cyan-300" />
               <span className="truncate">{value.imageFile ? value.imageFile.name : "Upload hero image"}</span>
             </button>
@@ -240,14 +250,14 @@ export function NewsPhotocardForm({
       <FormSection
         icon={Sparkles}
         title="AI prompt"
-        subtitle="Describe the story in rough words — AI will draft headline, subheadline, category, and tone."
+        subtitle="Describe your poster in rough words — AI will draft title, subtitle, CTA, type, and tone."
         accent
       >
         <textarea
           className="studio-input min-h-[100px] resize-y"
           value={value.aiPrompt}
           onChange={(e) => patch({ aiPrompt: e.target.value })}
-          placeholder="e.g. Bangladesh cricket team wins a close T20 match against India"
+          placeholder="e.g. Tech startup launch party for young founders in Dhaka"
           disabled={disabled || aiLoading}
         />
         <Button
@@ -262,15 +272,15 @@ export function NewsPhotocardForm({
         </Button>
       </FormSection>
 
-      <div className="panel border-cyan-400/20 bg-cyan-500/5">
+      <div className="panel border-violet-400/20 bg-violet-500/5">
         <Button
           size="lg"
           className="w-full"
           onClick={onGenerate}
-          disabled={disabled || loading || (!value.headline.trim() && !value.aiPrompt.trim())}
+          disabled={disabled || loading || (!value.title.trim() && !value.aiPrompt.trim())}
         >
           <Sparkles className="h-4 w-4" />
-          {loading ? "Generating…" : "Generate photocard"}
+          {loading ? "Generating…" : "Generate poster"}
         </Button>
       </div>
     </div>

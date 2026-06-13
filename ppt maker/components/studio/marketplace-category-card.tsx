@@ -25,18 +25,19 @@ export function MarketplaceCategoryCard({ category }: MarketplaceCategoryCardPro
   }
 
   return (
-    <article className="marketplace-grid-card group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-900/50">
+    <article className="marketplace-grid-card group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-900/60 shadow-[0_12px_32px_rgba(2,6,23,0.4)]">
       <Link href={href as Route} className="block flex-1">
         <div className={`relative h-32 bg-gradient-to-br ${category.gradient} p-5 sm:h-36`}>
-          <div className="absolute inset-0 bg-black/0 transition duration-300 group-hover:bg-black/10" />
-          <Icon className="relative h-9 w-9 text-white/95 drop-shadow transition duration-300 group-hover:scale-105" />
+          <div className="absolute inset-0 bg-black/0 transition duration-300 group-hover:bg-black/15" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
+          <Icon className="relative h-9 w-9 text-white/95 drop-shadow transition duration-300 group-hover:scale-105 sm:h-10 sm:w-10" />
         </div>
-        <div className="p-4 pb-3">
-          <h3 className="text-sm font-semibold text-white sm:text-base">{category.name}</h3>
-          <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-slate-400">{category.description}</p>
+        <div className="space-y-2 p-4 pb-3 sm:p-5">
+          <h3 className="text-sm font-semibold text-white transition group-hover:text-cyan-50 sm:text-base">{category.name}</h3>
+          <p className="line-clamp-2 text-xs leading-relaxed text-slate-400">{category.description}</p>
         </div>
       </Link>
-      <div className="px-4 pb-4">
+      <div className="px-4 pb-4 sm:px-5 sm:pb-5">
         <button
           type="button"
           onClick={handleGenerate}

@@ -2,11 +2,9 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
 import { NewsPhotocardForm } from "@/components/news-photocard/news-photocard-form";
 import { NewsPhotocardPreview } from "@/components/news-photocard/news-photocard-preview";
-import { PageHeader } from "@/components/ui/page-header";
-import { ErrorBanner } from "@/components/ui/inline-feedback";
+import { GeneratorShell } from "@/components/ui/generator-shell";
 import { generateNewsPhotocard, generateNewsPhotocardAiCopy } from "@/lib/api/client";
 import {
   DEFAULT_NEWS_PHOTOCARD_FORM,
@@ -105,20 +103,14 @@ export default function NewsPhotocardGeneratorPage() {
   }
 
   return (
-    <div className="space-y-6 pb-10">
-      <Link href="/dashboard" className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-white">
-        <ArrowLeft className="h-3.5 w-3.5" /> Marketplace
-      </Link>
-
-      <PageHeader
-        eyebrow="Content Studio"
-        title="News Photocard Generator"
-        description="Describe a story in plain words — AI drafts professional headline and subheadline for your photocard."
-      />
-
-      {error ? <ErrorBanner message={error} /> : null}
-
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(320px,420px)]">
+    <GeneratorShell
+      eyebrow="Content Studio"
+      title="News Photocard Generator"
+      description="Describe a story in plain words — AI drafts professional headline and subheadline for your photocard."
+      accent="cyan"
+      error={error}
+    >
+      <div className="studio-generator-grid">
         <NewsPhotocardForm
           value={form}
           onChange={setForm}
@@ -129,6 +121,6 @@ export default function NewsPhotocardGeneratorPage() {
         />
         <NewsPhotocardPreview form={form} generated={generated} aiCopy={aiCopy} />
       </div>
-    </div>
+    </GeneratorShell>
   );
 }

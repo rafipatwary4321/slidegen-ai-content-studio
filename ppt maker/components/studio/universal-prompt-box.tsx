@@ -33,7 +33,7 @@ export function UniversalPromptBox() {
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div className="relative">
         <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
         <input
@@ -41,7 +41,7 @@ export function UniversalPromptBox() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search categories — presentations, Instagram, certificates…"
-          className="w-full rounded-2xl border border-white/15 bg-slate-950/75 py-3.5 pl-11 pr-4 text-sm text-white outline-none placeholder:text-slate-500 focus:ring-2 focus:ring-cyan-400/25"
+          className="studio-input py-3.5 pl-11 pr-4"
         />
       </div>
       <div className="flex flex-col gap-3 sm:flex-row">
@@ -50,14 +50,14 @@ export function UniversalPromptBox() {
           onChange={(e) => setPrompt(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleBrowse()}
           placeholder="What do you want to create today?"
-          className="flex-1 rounded-2xl border border-white/15 bg-slate-950/75 px-4 py-3.5 text-sm text-white outline-none placeholder:text-slate-500 focus:ring-2 focus:ring-violet-400/25"
+          className="studio-input flex-1 py-3.5"
         />
-        <Button onClick={handleBrowse} size="lg" className="shrink-0 px-8">
+        <Button onClick={handleBrowse} size="lg" className="shrink-0 px-8 sm:min-w-[140px]">
           <Sparkles className="h-4 w-4" /> Browse
         </Button>
       </div>
-      <p className="text-xs text-slate-400">
-        Presentations use the full PPT generator. Other categories are browse-only until studio generation is ready.
+      <p className="rounded-xl border border-white/5 bg-white/[0.02] px-3 py-2 text-xs leading-relaxed text-slate-400">
+        Presentations use the full PPT generator. Other categories open their dedicated generators where available.
       </p>
     </div>
   );

@@ -45,7 +45,8 @@ export const CONTENT_CATEGORIES: ContentCategory[] = [
     supportedAspectRatios: ["A4", "4:5", "16:9"],
     supportedExports: ["png", "pdf", "jpg"],
     gradient: "from-fuchsia-600/70 to-purple-500/50",
-    tags: ["events"]
+    tags: ["events"],
+    legacyRoute: "/dashboard/generate/poster?type=event"
   },
   {
     id: "facebook-posts",
@@ -122,7 +123,8 @@ export const CONTENT_CATEGORIES: ContentCategory[] = [
     supportedAspectRatios: ["A4", "4:5", "16:9"],
     supportedExports: ["png", "pdf"],
     gradient: "from-slate-600/80 to-blue-600/50",
-    tags: ["political"]
+    tags: ["political"],
+    legacyRoute: "/dashboard/generate/poster?type=political"
   },
   {
     id: "educational-posters",
@@ -133,7 +135,8 @@ export const CONTENT_CATEGORIES: ContentCategory[] = [
     supportedAspectRatios: ["A4", "16:9"],
     supportedExports: ["png", "pdf"],
     gradient: "from-emerald-600/70 to-teal-500/50",
-    tags: ["education"]
+    tags: ["education"],
+    legacyRoute: "/dashboard/generate/poster?type=educational"
   },
   {
     id: "certificates",
@@ -166,7 +169,8 @@ export const CONTENT_CATEGORIES: ContentCategory[] = [
     supportedAspectRatios: ["A4", "4:5"],
     supportedExports: ["png", "pdf", "jpg"],
     gradient: "from-orange-600/70 to-red-500/50",
-    tags: ["flyers"]
+    tags: ["flyers"],
+    legacyRoute: "/dashboard/generate/poster?type=business"
   },
   {
     id: "brochures",
@@ -232,7 +236,8 @@ export const CONTENT_CATEGORIES: ContentCategory[] = [
     supportedAspectRatios: ["1:1", "4:5", "16:9"],
     supportedExports: ["png", "jpg", "pdf"],
     gradient: "from-emerald-500/70 to-lime-500/50",
-    tags: ["ecommerce"]
+    tags: ["ecommerce"],
+    legacyRoute: "/dashboard/generate/poster?type=product"
   },
   {
     id: "ngo-campaign-materials",
@@ -243,7 +248,8 @@ export const CONTENT_CATEGORIES: ContentCategory[] = [
     supportedAspectRatios: ["4:5", "16:9", "A4"],
     supportedExports: ["png", "pdf", "jpg"],
     gradient: "from-teal-600/70 to-green-500/50",
-    tags: ["ngo"]
+    tags: ["ngo"],
+    legacyRoute: "/dashboard/generate/poster?type=awareness"
   },
   {
     id: "real-estate-templates",
