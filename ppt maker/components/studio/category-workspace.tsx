@@ -9,6 +9,10 @@ import { Button } from "@/components/ui/button";
 import { getCategoryById } from "@/lib/content-studio/categories";
 import { categoryIcon } from "@/lib/content-studio/icons";
 
+import { CATEGORY_TO_POSTER_TYPE } from "@/lib/poster/constants";
+
+const POSTER_CATEGORY_IDS = Object.keys(CATEGORY_TO_POSTER_TYPE);
+
 interface CategoryWorkspaceProps {
   categoryId: string;
 }
@@ -25,6 +29,10 @@ export function CategoryWorkspace({ categoryId }: CategoryWorkspaceProps) {
     }
     if (categoryId === "news-photocards") {
       router.replace("/dashboard/generate/news-photocard" as Route);
+    }
+    if (POSTER_CATEGORY_IDS.includes(categoryId)) {
+      const type = CATEGORY_TO_POSTER_TYPE[categoryId];
+      router.replace(`/dashboard/generate/poster?type=${type}` as Route);
     }
   }, [categoryId, router]);
 
@@ -45,6 +53,10 @@ export function CategoryWorkspace({ categoryId }: CategoryWorkspaceProps) {
 
   if (categoryId === "news-photocards") {
     return <p className="text-sm text-slate-400">Redirecting to news photocard generator…</p>;
+  }
+
+  if (POSTER_CATEGORY_IDS.includes(categoryId)) {
+    return <p className="text-sm text-slate-400">Redirecting to poster generator…</p>;
   }
 
   const Icon = categoryIcon(category.icon);

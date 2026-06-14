@@ -15,6 +15,14 @@ import type {
   NewsPhotocardGenerateRequest,
   NewsPhotocardGenerateResponse
 } from "@/lib/news-photocard/types";
+import type {
+  PosterAiCopyRequest,
+  PosterAiCopyResponse,
+  PosterExportRequest,
+  PosterExportResponse,
+  PosterGenerateRequest,
+  PosterGenerateResponse
+} from "@/lib/poster/types";
 import {
   AnalyzeResponse,
   AuthResponse,
@@ -187,6 +195,27 @@ export async function registerNewsPhotocardExport(
   payload: NewsPhotocardExportRequest
 ): Promise<NewsPhotocardExportResponse> {
   return apiRequest<NewsPhotocardExportResponse>("/api/v1/content/export/news-photocard", {
+    method: "POST",
+    body: payload
+  });
+}
+
+export async function generatePoster(payload: PosterGenerateRequest): Promise<PosterGenerateResponse> {
+  return apiRequest<PosterGenerateResponse>("/api/v1/content/generate/poster", {
+    method: "POST",
+    body: payload
+  });
+}
+
+export async function generatePosterAiCopy(payload: PosterAiCopyRequest): Promise<PosterAiCopyResponse> {
+  return apiRequest<PosterAiCopyResponse>("/api/v1/content/generate/poster/ai-copy", {
+    method: "POST",
+    body: payload
+  });
+}
+
+export async function registerPosterExport(payload: PosterExportRequest): Promise<PosterExportResponse> {
+  return apiRequest<PosterExportResponse>("/api/v1/content/export/poster", {
     method: "POST",
     body: payload
   });

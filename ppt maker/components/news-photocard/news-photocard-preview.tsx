@@ -2,7 +2,14 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Newspaper } from "lucide-react";
-import { categoryLabel, PREVIEW_PALETTES, toneLabel } from "@/lib/news-photocard/constants";
+import { ExportPngButton } from "@/components/news-photocard/export-png-button";
+import { PREVIEW_PALETTES, toneLabel } from "@/lib/news-photocard/constants";
+import {
+  formatPhotocardDate,
+  resolveCategory,
+  resolveHeadline,
+  resolveSubheadline
+} from "@/lib/news-photocard/render-model";
 import type { NewsPhotocardAiCopyData, NewsPhotocardData, NewsPhotocardFormState } from "@/lib/news-photocard/types";
 
 interface NewsPhotocardPreviewProps {
@@ -16,14 +23,6 @@ const ASPECT_CLASS: Record<string, string> = {
   "4:5": "aspect-[4/5] max-w-sm",
   "9:16": "aspect-[9/16] max-w-[280px]"
 };
-
-function formatDate(language: "en" | "bn") {
-  const now = new Date();
-  if (language === "bn") {
-    return now.toLocaleDateString("bn-BD", { day: "numeric", month: "short", year: "numeric" });
-  }
-  return now.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
-}
 
 export function NewsPhotocardPreview({ form, generated, aiCopy }: NewsPhotocardPreviewProps) {
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
@@ -50,10 +49,10 @@ export function NewsPhotocardPreview({ form, generated, aiCopy }: NewsPhotocardP
   }, [form.imageFile]);
 
   const palette = PREVIEW_PALETTES[form.designStyle];
-  const headline = generated?.headline ?? aiCopy?.headline ?? form.headline;
-  const subheadline = generated?.subheadline ?? aiCopy?.subheadline ?? form.subheadline;
-  const category = generated?.category ?? (aiCopy ? categoryLabel(aiCopy.category) : categoryLabel(form.newsCategory));
-  const dateStr = formatDate(form.language);
+  const headline = resolveHeadline(form, generated, aiCopy);
+  const subheadline = resolveSubheadline(form, generated, aiCopy);
+  const category = resolveCategory(form, generated, aiCopy);
+  const dateStr = formatPhotocardDate(form.language);
   const layoutNote = generated?.layoutInstructions ?? aiCopy?.layoutDirection;
 
   const headlineFont = form.language === "bn" ? "var(--font-bengali)" : "Georgia, 'Times New Roman', serif";
@@ -75,11 +74,10 @@ export function NewsPhotocardPreview({ form, generated, aiCopy }: NewsPhotocardP
   }, [form.tone]);
 
   const aspectClass = ASPECT_CLASS[form.aspectRatio] ?? ASPECT_CLASS["4:5"];
-  const isLight = form.designStyle === "white";
 
   return (
-    <section className="panel sticky top-4">
-      <div className="mb-4 flex items-center justify-between gap-3">
+    <section className="generator-preview-shell">
+      <div className="flex items-start justify-between gap-3">
         <div>
           <h3 className="panel-title">Live preview</h3>
           <p className="panel-subtitle">
@@ -88,12 +86,13 @@ export function NewsPhotocardPreview({ form, generated, aiCopy }: NewsPhotocardP
             {generated ? " · Generated" : ""}
           </p>
         </div>
-        <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] text-slate-400">
-          MVP
+        <span className="rounded-full border border-cyan-400/25 bg-cyan-500/10 px-2.5 py-1 text-[10px] font-medium text-cyan-200">
+          News
         </span>
       </div>
 
-      <div className="flex justify-center">
+      <div className="preview-canvas-frame">
+        <div className="flex justify-center">
         <article
           className={`relative w-full overflow-hidden rounded-2xl shadow-2xl ${aspectClass}`}
           style={{ backgroundColor: palette.bg, color: palette.text }}
@@ -108,8 +107,8 @@ export function NewsPhotocardPreview({ form, generated, aiCopy }: NewsPhotocardP
             <span
               className="inline-block px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider sm:text-[11px]"
               style={{
-                backgroundColor: isLight ? palette.badge : palette.badge,
-                color: isLight ? palette.text : palette.text,
+                backgroundColor: palette.badge,
+                color: palette.text,
                 borderRadius: toneStyles.badgeRadius
               }}
             >
@@ -179,10 +178,21 @@ export function NewsPhotocardPreview({ form, generated, aiCopy }: NewsPhotocardP
             </div>
           </div>
         </article>
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-white/10 bg-slate-950/40 p-3">
+        <ExportPngButton
+          form={form}
+          generated={generated}
+          aiCopy={aiCopy}
+          logoObjectUrl={logoUrl}
+          imageObjectUrl={imageUrl}
+        />
       </div>
 
       {layoutNote ? (
-        <div className="mt-4 rounded-xl border border-white/10 bg-slate-950/50 p-3">
+        <div className="rounded-xl border border-white/10 bg-slate-950/50 p-3.5">
           <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Layout direction</p>
           <p className="mt-1.5 text-xs leading-relaxed text-slate-400">{layoutNote}</p>
         </div>

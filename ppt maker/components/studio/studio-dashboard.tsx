@@ -11,13 +11,14 @@ export function StudioDashboard() {
   const filtered = searchQuery.trim() ? searchCategories(searchQuery) : null;
 
   return (
-    <div className="space-y-8 pb-10">
+    <div className="space-y-10 pb-12">
       <MarketplaceHero />
       {filtered ? (
-        <BrowseAllCategories categories={filtered} />
+        <BrowseAllCategories categories={filtered} title="Search results" subtitle={`${filtered.length} categories match your query`} />
       ) : (
         <>
           <FeaturedCategoriesSection />
+          <div className="studio-divider" />
           <BrowseAllCategories categories={CONTENT_CATEGORIES} />
         </>
       )}
